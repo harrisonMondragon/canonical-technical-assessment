@@ -58,11 +58,8 @@ SYS_STAT_BEGIN=$(cat /sys/block/"$DISK"/stat)
 # Generate some disk activity using dd
 dd if=/dev/zero of=/tmp/testfile bs=1M count=100
 
-# #Sleep 5 to let the stats files catch up
-# sleep 5
-
-# Try sleeping longer
-sleep 20
+#Sleep 5 to let the stats files catch up
+sleep 5
 
 #Make sure the stats have changed:
 PROC_STAT_END=$(grep -w -m 1 "$DISK" /proc/diskstats)
