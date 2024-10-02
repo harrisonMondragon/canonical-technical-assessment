@@ -60,9 +60,15 @@ def main():
     # Get some baseline stats for use later
     try:
         with open("/proc/diskstats", "r") as f:
-            PROC_STAT_BEGIN = [line for line in f if DISK in line][0]
+            matched_lines = [line for line in f if DISK in line]
+            if not matched_lines:
+                check_return_code(1, f"No stats found for disk {DISK} in /proc/diskstats")
+            PROC_STAT_BEGIN = matched_lines[0]  # Get the first matching line
+            
         with open(f"/sys/block/{DISK}/stat", "r") as f:
             SYS_STAT_BEGIN = f.read()
+            if not SYS_STAT_BEGIN.strip():  # Check if the read data is empty
+                check_return_code(1, f"Stat file is empty in /sys/block/{DISK}/stat")
     except FileNotFoundError:
         check_return_code(1, f"Failed to retrieve stats for {DISK}")
 
@@ -78,16 +84,10 @@ def main():
     # Make sure the stats have changed
     try:
         with open("/proc/diskstats", "r") as f:
-            PROC_STAT_END = [line for line in f if DISK in line]
-            if not PROC_STAT_END:
-                check_return_code(1, f"Failed to retrieve updated stats for {DISK} in /proc/diskstats")
-            PROC_STAT_END = PROC_STAT_END[0]  # Get the first matching line
-
+            PROC_STAT_END = [line for line in f if DISK in line][0]
         with open(f"/sys/block/{DISK}/stat", "r") as f:
-            SYS_STAT_END = f.read().strip()
-            if not SYS_STAT_END:
-                check_return_code(1, f"Failed to retrieve updated stats for {DISK} in /sys/block/{DISK}/stat")
-
+            SYS_STAT_END = f.read()
+        
         if PROC_STAT_BEGIN == PROC_STAT_END:
             check_return_code(1, "Stats in /proc/diskstats did not change", PROC_STAT_BEGIN, PROC_STAT_END)
 
