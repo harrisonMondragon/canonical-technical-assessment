@@ -55,8 +55,11 @@ SYS_STAT_BEGIN=$(cat /sys/block/"$DISK"/stat)
 #Generate some disk activity using hdparm -t
 hdparm -t "/dev/$DISK" 2&> /dev/null
 
-#Sleep 5 to let the stats files catch up
-sleep 5
+# #Sleep 5 to let the stats files catch up
+# sleep 5
+
+# Try sleeping longer
+sleep 20
 
 #Make sure the stats have changed:
 PROC_STAT_END=$(grep -w -m 1 "$DISK" /proc/diskstats)
