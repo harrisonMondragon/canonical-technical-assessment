@@ -61,9 +61,10 @@ def main():
     try:
         with open("/proc/diskstats", "r") as f:
             matched_lines = [line for line in f if DISK in line]
-            if not matched_lines:
+            if matched_lines:  # Check if matched_lines is not empty
+                PROC_STAT_BEGIN = matched_lines[0]  # Get the first matching line
+            else:
                 check_return_code(1, f"No stats found for disk {DISK} in /proc/diskstats")
-            PROC_STAT_BEGIN = matched_lines[0]  # Get the first matching line
             
         with open(f"/sys/block/{DISK}/stat", "r") as f:
             SYS_STAT_BEGIN = f.read()
