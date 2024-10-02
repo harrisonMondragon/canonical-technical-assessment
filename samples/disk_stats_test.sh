@@ -52,8 +52,11 @@ check_return_code $? "stat is either empty or nonexistant in /sys/block/$DISK/"
 PROC_STAT_BEGIN=$(grep -w -m 1 "$DISK" /proc/diskstats)
 SYS_STAT_BEGIN=$(cat /sys/block/"$DISK"/stat)
 
-#Generate some disk activity using hdparm -t
-hdparm -t "/dev/$DISK" 2&> /dev/null
+# #Generate some disk activity using hdparm -t
+# hdparm -t "/dev/$DISK" 2&> /dev/null
+
+# Generate some disk activity using dd
+dd if=/dev/zero of=/tmp/testfile bs=1M count=100
 
 # #Sleep 5 to let the stats files catch up
 # sleep 5
