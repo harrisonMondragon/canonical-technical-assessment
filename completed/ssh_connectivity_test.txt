@@ -1,1 +1,49 @@
-Test case for testing SSH connectivity using Password and Key based auth
+Test Case 1: Password Based auth
+
+    Preconditions:
+        - User has valid credentials
+        - SSH server has password auth enabled
+    
+    Test Steps:
+        1. Open an SSH client
+        2. Attempt to connect to server using [ssh username@hostname]
+        3. Enter the correct password for the user when prompted
+        4. Wait up to 10 seconds for the connection to establish successfully
+        5. Execute a simple command like [ls] or [pwd] to verify commands can be ran on server
+        6. Log out of SSH session
+
+    Expected Result:
+        - SSH connection successfully established after step 4
+        - User can execute commands on the server from step 5
+        - No errors occurred during any test step
+
+    Negative Tests:
+        - Use an incorrect password and ensure connection is denied
+        - Use an invalid username and enure system returns an auth error
+
+
+Test Case 2: Key Based Auth
+
+    Preconditions:
+        - A valid SSH key pair is available
+        - Public key had been added to the [~/.ssh/authorized_keys] file on the server
+        - Private key is accessible on the client machine
+        - SSH server has key auth enabled
+
+    Test Steps:
+        1. Open an SSH client
+        2. Attempt to connect to server using [ssh -i /path/to/private_key username@hostname]
+        3. Enter private key passphrase if it is passphrase protected
+        4. Wait up tp 10 seconds for the connection to establish successfully
+        5. Execute a simple command like [ls] or [pwd] to verify commands can be ran on server
+        6. Log out of SSH session
+
+    Expected Result:
+        - SSH connection successfully established after step 4
+        - User can execute commands on the server from step 5
+        - No errors occurred during any test step
+
+    Negative Tests:
+        - Use an incorrect private key and ensure connection is denied
+        - If private key is passphrase protected, use an incorrect passphrase and ensure connection is denied
+        - Ensure connection fails if public key is not present in the server's [~/.ssh/authorized_keys] file
