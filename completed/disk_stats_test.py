@@ -19,6 +19,7 @@ def check_return_code(retval, message, *args):
         if args:
             for item in args:
                 print(f"output: {item}")
+        sys.exit(retval)
 
 def main():
     global DISK, STATUS
