@@ -85,7 +85,13 @@ def main():
     # Make sure the stats have changed
     try:
         with open("/proc/diskstats", "r") as f:
-            PROC_STAT_END = [line for line in f if DISK in line][0]
+            matched_lines_end = [line for line in f if DISK in line]
+            
+        if matched_lines_end:  # Check if matched_lines_end is not empty
+            PROC_STAT_END = matched_lines_end[0]  # Get the first matching line
+        else:
+            check_return_code(1, f"Failed to retrieve updated stats for {DISK} in /proc/diskstats")
+
         with open(f"/sys/block/{DISK}/stat", "r") as f:
             SYS_STAT_END = f.read()
         
